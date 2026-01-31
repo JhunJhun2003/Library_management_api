@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAuthorRequest;
 use App\Models\Author;
 use Illuminate\Http\Request;
+use App\Http\Resources\AuthorResource;
 
 class AuthorController extends Controller
 {
@@ -25,7 +26,7 @@ class AuthorController extends Controller
     {
         $author = Author::create($request->validated());
 
-        return response()->json(['author' => $author, 'message' => 'Author created with success'], 201);
+        return new AuthorResource($author);
     }
 
     /**
