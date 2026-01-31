@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAuthorRequest;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Http\Resources\AuthorResource;
+use Illuminate\Container\Attributes\Auth;
 
 class AuthorController extends Controller
 {
@@ -14,9 +15,9 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::paginate(10);
+        $authors = Author::with('books')->paginate(10);
 
-        return response()->json(['authors' => $authors, 'message' => 'Authors fetched with success'], 200);
+        return AuthorResource::collection($authors);
     }
 
     /**
@@ -34,20 +35,22 @@ class AuthorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $author = Author::find( $id );
+        return new AuthorResource($author);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreAuthorRequest $request, Author $author)
     {
-        //
+        $author->update($request->validated());
+        return new AuthorResource($author); 
     }
-
     /**
      * Remove the specified resource from storage.
      */
+    
     public function destroy(string $id)
     {
         //

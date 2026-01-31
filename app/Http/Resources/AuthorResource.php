@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\BookResource;
 
 class AuthorResource extends JsonResource
 {
@@ -14,6 +15,11 @@ class AuthorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'name' => strtoupper($this->name),
+            'bio' => $this->bio,
+            'nationality' => strtolower($this->nationality),
+            'books' => $this->when($this->relationLoaded('books'), $this->books->count()),
+        ];
     }
 }
